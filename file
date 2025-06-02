@@ -1,1 +1,771 @@
-
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dota 2 Meta Tracker | Патч 7.39b</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;700&family=Rubik:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF5C00;
+            --primary-dark: #E04A00;
+            --dark: #0F0F13;
+            --darker: #07070A;
+            --light: #F5F5F7;
+            --gray: #8E8E93;
+            --success: #34C759;
+            --danger: #FF3B30;
+            --warning: #FF9500;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Rubik', sans-serif;
+            background-color: var(--dark);
+            color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Oxanium', sans-serif;
+            font-weight: 700;
+        }
+        
+        /* Шапка */
+        header {
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 100;
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo img {
+            height: 50px;
+            width: auto;
+        }
+        
+        .logo-text {
+            font-family: 'Oxanium', sans-serif;
+            font-weight: 700;
+            font-size: 1.8rem;
+            background: linear-gradient(to right, var(--primary), #FF9500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .patch-badge {
+            background: var(--primary);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-left: 1rem;
+            vertical-align: middle;
+        }
+        
+        /* Навигация */
+        nav ul {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+        }
+        
+        nav a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+        
+        nav a:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        nav a:hover:after {
+            width: 100%;
+        }
+        
+        nav a:hover {
+            color: var(--primary);
+        }
+        
+        /* Герой-баннер */
+        .hero-banner {
+            background: url('https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/backgrounds/greyfade.jpg') center/cover;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-banner:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(15,15,19,0.9) 0%, rgba(15,15,19,0.6) 100%);
+        }
+        
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+            width: 100%;
+        }
+        
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .hero-content p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-bottom: 2rem;
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 92, 0, 0.3);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            margin-left: 1rem;
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Основной контент */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+        
+        /* Карточки героев */
+        .hero-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .hero-card {
+            background: rgba(30, 30, 36, 0.6);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .hero-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 92, 0, 0.3);
+        }
+        
+        .hero-card-top {
+            position: relative;
+            height: 180px;
+            overflow: hidden;
+        }
+        
+        .hero-card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .hero-card:hover .hero-card-img {
+            transform: scale(1.05);
+        }
+        
+        .hero-card-role {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.7);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .hero-card-body {
+            padding: 1.5rem;
+        }
+        
+        .hero-card-title {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            font-family: 'Oxanium', sans-serif;
+        }
+        
+        .hero-card-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .win-rate {
+            color: var(--success);
+            font-weight: 600;
+        }
+        
+        .pick-rate {
+            color: var(--warning);
+        }
+        
+        .hero-card-items {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .item-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+        
+        /* Таблица изменений */
+        .changes-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 2rem;
+            background: rgba(30, 30, 36, 0.6);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .changes-table th {
+            background: rgba(255, 92, 0, 0.2);
+            padding: 1rem;
+            text-align: left;
+            font-family: 'Oxanium', sans-serif;
+            font-weight: 600;
+        }
+        
+        .changes-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .changes-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .changes-table tr:hover {
+            background: rgba(255, 92, 0, 0.05);
+        }
+        
+        .buff {
+            color: var(--success);
+            font-weight: 500;
+        }
+        
+        .nerf {
+            color: var(--danger);
+            font-weight: 500;
+        }
+        
+        .adjustment {
+            color: var(--warning);
+            font-weight: 500;
+        }
+        
+        /* Форма */
+        .form-container {
+            background: rgba(30, 30, 36, 0.6);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 3rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: white;
+            font-family: 'Rubik', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 92, 0, 0.05);
+        }
+        
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        /* Подвал */
+        footer {
+            background: var(--darker);
+            padding: 4rem 0 2rem;
+            margin-top: 4rem;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)));
+            gap: 2rem;
+        }
+        
+        .footer-col h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .footer-col ul {
+            list-style: none;
+        }
+        
+        .footer-col li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-col a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-col a:hover {
+            color: var(--primary);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .social-links img {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                gap: 1rem;
+            }
+            
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .btn {
+                display: block;
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+            
+            .btn-outline {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/global/dota2_logo_symbol.png" alt="Dota 2 Logo">
+                <span class="logo-text">Meta Tracker</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#current-meta">Текущий мета</a></li>
+                    <li><a href="#top-heroes">Топ героев</a></li>
+                    <li><a href="#patch-changes">Изменения</a></li>
+                    <li><a href="#feedback">Обратная связь</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Баннер -->
+    <section class="hero-banner">
+        <div class="hero-content">
+            <h1>Анализ мета Dota 2 <span class="patch-badge">7.39b</span></h1>
+            <p>Полное руководство по изменениям в последнем патче. Узнайте, какие герои стали сильнее, а какие выпали из меты.</p>
+            <div>
+                <a href="#patch-changes" class="btn">Смотреть изменения</a>
+                <a href="#top-heroes" class="btn btn-outline">Тир-лист героев</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Основной контент -->
+    <main class="container">
+        <!-- Текущий мета -->
+        <section id="current-meta">
+            <h2 class="section-title">Текущий мета</h2>
+            <p>Патч <strong>7.39b</strong> принес значительные изменения в баланс игры после масштабного обновления 7.39. Основные тенденции текущего мета:</p>
+            
+            <div class="hero-grid" style="margin-top: 2rem;">
+                <div class="meta-trend-card">
+                    <h3>Универсальные герои</h3>
+                    <p>После баффов в 7.39 универсалы доминируют в мете, особенно на оффлейне и миду.</p>
+                </div>
+                <div class="meta-trend-card">
+                    <h3>Контроль территории</h3>
+                    <p>Возросла важность контроля нейтральных крипов и ключевых зон на карте.</p>
+                </div>
+                <div class="meta-trend-card">
+                    <h3>Поздняя игра</h3>
+                    <p>Мета сместилась в сторону поздней игры из-за изменений в механиках выкупа и опыта.</p>
+                </div>
+            </div>
+            
+            <img src="https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/blog/739b_meta_map.jpg" alt="Dota 2 Meta Map" style="width:100%; border-radius:12px; margin-top:2rem; border:1px solid rgba(255,255,255,0.1);">
+        </section>
+        
+        <!-- Топ героев -->
+        <section id="top-heroes" style="margin-top: 6rem;">
+            <h2 class="section-title">Топ героев 7.39b</h2>
+            <p>Следующие герои имеют наибольший винрейт и пикрейт в высоком MMR и профессиональных матчах:</p>
+            
+            <div class="hero-grid">
+                <!-- Omniknight -->
+                <div class="hero-card">
+                    <div class="hero-card-top">
+                        <img src="https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/omniknight.png" alt="Omniknight" class="hero-card-img">
+                        <span class="hero-card-role">Оффлейн</span>
+                    </div>
+                    <div class="hero-card-body">
+                        <h3 class="hero-card-title">Omniknight</h3>
+                        <div class="hero-card-meta">
+                            <span class="win-rate">Win: 56.3% <span style="color:var(--success)">↑3.2%</span></span>
+                            <span class="pick-rate">Pick: 12.7%</span>
+                        </div>
+                        <p>Получил значительные баффы к Purification и Heavenly Grace в 7.39b</p>
+                        <div class="hero-card-items">
+                            <div class="item-icon">Greaves</div>
+                            <div class="item-icon">Pipe</div>
+                            <div class="item-icon">Shiva</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Phantom Assassin -->
+                <div class="hero-card">
+                    <div class="hero-card-top">
+                        <img src="https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/phantom_assassin.png" alt="Phantom Assassin" class="hero-card-img">
+                        <span class="hero-card-role">Керри</span>
+                    </div>
+                    <div class="hero-card-body">
+                        <h3 class="hero-card-title">Phantom Assassin</h3>
+                        <div class="hero-card-meta">
+                            <span class="win-rate">Win: 53.8% <span style="color:var(--success)">↑2.1%</span></span>
+                            <span class="pick-rate">Pick: 18.5%</span>
+                        </div>
+                        <p>Усиление Stifling Dagger сделало её сильнее на лайнинге</p>
+                        <div class="hero-card-items">
+                            <div class="item-icon">BFury</div>
+                            <div class="item-icon">BKB</div>
+                            <div class="item-icon">Deso</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Dark Willow -->
+                <div class="hero-card">
+                    <div class="hero-card-top">
+                        <img src="https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/dark_willow.png" alt="Dark Willow" class="hero-card-img">
+                        <span class="hero-card-role">Саппорт</span>
+                    </div>
+                    <div class="hero-card-body">
+                        <h3 class="hero-card-title">Dark Willow</h3>
+                        <div class="hero-card-meta">
+                            <span class="win-rate">Win: 52.7% <span style="color:var(--success)">↑1.9%</span></span>
+                            <span class="pick-rate">Pick: 9.3%</span>
+                        </div>
+                        <p>Несмотря на нерф Bramble Maze, остается сильным саппортом</p>
+                        <div class="hero-card-items">
+                            <div class="item-icon">Glimmer</div>
+                            <div class="item-icon">Aghs</div>
+                            <div class="item-icon">Eul</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Изменения в патче -->
+        <section id="patch-changes" style="margin-top: 6rem;">
+            <h2 class="section-title">Изменения в 7.39b</h2>
+            <p>Ключевые балансные изменения, которые повлияли на текущий мета:</p>
+            
+            <table class="changes-table">
+                <thead>
+                    <tr>
+                        <th>Герой/Предмет</th>
+                        <th>Изменение</th>
+                        <th>Тип</th>
+                        <th>Влияние</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Omniknight</td>
+                        <td>Purification manacost reduced from 85/100/115/130 to 80/90/100/110</td>
+                        <td><span class="buff">Buff</span></td>
+                        <td>Сильнее на лайнинге, больше хиллов</td>
+                    </tr>
+                    <tr>
+                        <td>Phantom Assassin</td>
+                        <td>Stifling Dagger slow increased from 20/25/30/35% to 25/30/35/40%</td>
+                        <td><span class="buff">Buff</span></td>
+                        <td>Лучший контроль на лайне</td>
+                    </tr>
+                    <tr>
+                        <td>Dark Willow</td>
+                        <td>Bramble Maze duration reduced from 6s to 5s</td>
+                        <td><span class="nerf">Nerf</span></td>
+                        <td>Слабее контроль в мидгейме</td>
+                    </tr>
+                    <tr>
+                        <td>Hand of Midas</td>
+                        <td>Gold bonus reduced from 160 to 140</td>
+                        <td><span class="nerf">Nerf</span></td>
+                        <td>Меньше выгоды от раннего Midas</td>
+                    </tr>
+                    <tr>
+                        <td>Pipe of Insight</td>
+                        <td>Recipe cost increased from 800 to 900</td>
+                        <td><span class="nerf">Nerf</span></td>
+                        <td>Поздний тайминг для Pipe</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="form-container" id="feedback">
+                <h3 style="font-size:1.8rem; margin-bottom:1.5rem;">Обратная связь</h3>
+                <form>
+                    <div class="form-group">
+                        <label for="name">Ваше имя</label>
+                        <input type="text" id="name" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="rating">Оценка патча 7.39b</label>
+                        <select id="rating" class="form-control">
+                            <option value="">Выберите оценку</option>
+                            <option value="5">Отлично (5/5)</option>
+                            <option value="4">Хорошо (4/5)</option>
+                            <option value="3">Нормально (3/5)</option>
+                            <option value="2">Плохо (2/5)</option>
+                            <option value="1">Ужасно (1/5)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="comments">Ваши комментарии</label>
+                        <textarea id="comments" class="form-control"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn">Отправить отзыв</button>
+                </form>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Подвал -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>Dota 2 Meta Tracker</h3>
+                <p>Актуальная информация о мета-тенденциях в Dota 2. Анализ патчей, тир-листы героев и стратегии.</p>
+                <div class="social-links">
+                    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter"></a>
+                    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram"></a>
+                    <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/5968/5968885.png" alt="Discord"></a>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Разделы</h3>
+                <ul>
+                    <li><a href="#current-meta">Текущий мета</a></li>
+                    <li><a href="#top-heroes">Топ героев</a></li>
+                    <li><a href="#patch-changes">Изменения</a></li>
+                    <li><a href="#feedback">Обратная связь</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Ресурсы</h3>
+                <ul>
+                    <li><a href="https://www.dota2.com/patches/" target="_blank">Официальные патчи</a></li>
+                    <li><a href="https://www.dotabuff.com/" target="_blank">Dotabuff</a></li>
+                    <li><a href="https://stratz.com/" target="_blank">Stratz</a></li>
+                    <li><a href="https://liquipedia.net/dota2/" target="_blank">Liquipedia</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Контакты</h3>
+                <ul>
+                    <li>Email: info@dotameta.com</li>
+                    <li>Discord: discord.gg/dotameta</li>
+                    <li>Телеграм: @dotameta</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>© 2025 Dota 2 Meta Tracker. Все права защищены. Dota 2 является зарегистрированной торговой маркой Valve Corporation.</p>
+        </div>
+    </footer>
+</body>
+</html>
