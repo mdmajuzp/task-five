@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет | Семья — это главное</title>
+    <style>
+        /* Общие стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #bb86fc;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1920px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Шапка сайта */
+        header {
+            background-color: #1e1e1e;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 50px;
+            margin-right: 15px;
+            border-radius: 50%;
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #bb86fc;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 25px;
+        }
+        
+        nav ul li a {
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: #ffffff;
+        }
+        
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: #bb86fc;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 25px;
+        }
+        
+        /* Основное содержимое */
+        .account-section {
+            padding: 60px 0;
+            min-height: calc(100vh - 150px);
+        }
+        
+        .account-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        
+        .account-title {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 32px;
+            color: #ffffff;
+        }
+        
+        /* Блок профиля */
+        .profile-card {
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #333;
+            margin-right: 20px;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: #bb86fc;
+        }
+        
+        .profile-info h3 {
+            font-size: 22px;
+            margin-bottom: 5px;
+            color: #ffffff;
+        }
+        
+        .profile-info p {
+            color: #b0b0b0;
+        }
+        
+        .profile-details {
+            margin-top: 20px;
+        }
+        
+        .detail-item {
+            margin-bottom: 15px;
+        }
+        
+        .detail-label {
+            color: #b0b0b0;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .detail-value {
+            font-size: 16px;
+        }
+        
+        .logout-btn {
+            display: block;
+            width: 100%;
+            background-color: #cf6679;
+            color: #121212;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: background-color 0.3s;
+            text-align: center;
+        }
+        
+        .logout-btn:hover {
+            background-color: #ba1a37;
+        }
+        
+        /* Форма редактирования профиля */
+        .edit-form {
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .form-title {
+            font-size: 22px;
+            margin-bottom: 25px;
+            color: #ffffff;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #b0b0b0;
+        }
+        
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: #333;
+            border: 1px solid #444;
+            border-radius: 5px;
+            color: #ffffff;
+            font-size: 16px;
+        }
+        
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #bb86fc;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .save-btn {
+            background-color: #bb86fc;
+            color: #121212;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .save-btn:hover {
+            background-color: #9a67ea;
+        }
+        
+        /* Мои записи */
+        .bookings-list {
+            grid-column: 1 / -1;
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .bookings-title {
+            font-size: 22px;
+            margin-bottom: 25px;
+            color: #ffffff;
+        }
+        
+        .booking-item {
+            background-color: #252525;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        
+        .booking-info {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .booking-name {
+            font-size: 18px;
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+        
+        .booking-meta {
+            color: #b0b0b0;
+            font-size: 14px;
+        }
+        
+        .booking-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .edit-btn {
+            background-color: #bb86fc;
+            color: #121212;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .cancel-btn {
+            background-color: #cf6679;
+            color: #121212;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .edit-btn:hover {
+            background-color: #9a67ea;
+        }
+        
+        .cancel-btn:hover {
+            background-color: #ba1a37;
+        }
+        
+        /* Подвал сайта */
+        footer {
+            background-color: #121212;
+            padding: 60px 0 30px;
+            color: #b0b0b0;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .footer-logo img {
+            height: 40px;
+            margin-right: 10px;
+            border-radius: 50%;
+        }
+        
+        .footer-logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: #bb86fc;
+        }
+        
+        .footer-contact {
+            margin-bottom: 15px;
+        }
+        
+        .footer-contact a {
+            color: #b0b0b0;
+            transition: color 0.3s;
+        }
+        
+        .footer-contact a:hover {
+            color: #ffffff;
+        }
+        
+        .footer-links h3 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .footer-links ul {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #b0b0b0;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: #ffffff;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 992px) {
+            .account-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                width: 100%;
+                margin-top: 20px;
+                display: none;
+            }
+            
+            nav ul.show {
+                display: flex;
+            }
+            
+            nav ul li {
+                margin: 10px 0;
+            }
+            
+            .menu-toggle {
+                display: block;
+                background: none;
+                border: none;
+                color: #bb86fc;
+                font-size: 24px;
+                cursor: pointer;
+                align-self: flex-end;
+                margin-top: -40px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .booking-item {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .booking-actions {
+                justify-content: flex-end;
+                width: 100%;
+            }
+            
+            .footer-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка сайта -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" alt="Логотип 'Семья — это главное'">
+                    <span class="logo-text">Семья — это главное</span>
+                </div>
+                <nav>
+                    <button class="menu-toggle">☰</button>
+                    <ul>
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="schedule.html">Расписание</a></li>
+                        <li><a href="competition.html">Конкурсы</a></li>
+                        <li><a href="account.html" class="active">Личный кабинет</a></li>
+                        <li><button class="theme-toggle">Светлая тема</button></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основное содержимое -->
+    <section class="account-section">
+        <div class="container">
+            <h1 class="account-title">Личный кабинет</h1>
+            
+            <div class="account-container">
+                <!-- Блок профиля -->
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <div class="profile-avatar" style="background-image: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80');">
+                            <!-- Если нет фото, показываем инициалы -->
+                            <!-- <span>МП</span> -->
+                        </div>
+                        <div class="profile-info">
+                            <h3>Иванова Мария</h3>
+                            <p>Участник конкурсов</p>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Email</div>
+                            <div class="detail-value">family@example.com</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Телефон</div>
+                            <div class="detail-value">+7 (123) 456-78-90</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Дата регистрации</div>
+                            <div class="detail-value">15.05.2024</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Участий в конкурсах</div>
+                            <div class="detail-value">5</div>
+                        </div>
+                        
+                        <a href="#" class="logout-btn">Выйти из аккаунта</a>
+                    </div>
+                </div>
+                
+                <!-- Форма редактирования профиля -->
+                <div class="edit-form">
+                    <h2 class="form-title">Редактировать профиль</h2>
+                    <form>
+                        <div class="form-group">
+                            <label for="name" class="form-label">Имя</label>
+                            <input type="text" id="name" class="form-input" value="Иванова Мария">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" id="email" class="form-input" value="family@example.com">
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="phone" class="form-label">Телефон</label>
+                                <input type="tel" id="phone" class="form-input" value="+7 (123) 456-78-90">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="family-members" class="form-label">Членов семьи</label>
+                                <input type="number" id="family-members" class="form-input" value="4" min="1">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password" class="form-label">Новый пароль</label>
+                            <input type="password" id="password" class="form-input" placeholder="Введите новый пароль">
+                        </div>
+                        
+                        <button type="submit" class="save-btn">Сохранить изменения</button>
+                    </form>
+                </div>
+                
+                <!-- Мои записи -->
+                <div class="bookings-list">
+                    <h2 class="bookings-title">Мои записи на мероприятия</h2>
+                    
+                    <div class="booking-item">
+                        <div class="booking-info">
+                            <div class="booking-name">Семейный кулинарный мастер-класс</div>
+                            <div class="booking-meta">15 июня 2024, 11:00 • 4 участника</div>
+                        </div>
+                        <div class="booking-actions">
+                            <button class="edit-btn">Изменить</button>
+                            <button class="cancel-btn">Отменить</button>
+                        </div>
+                    </div>
+                    
+                    <div class="booking-item">
+                        <div class="booking-info">
+                            <div class="booking-name">Творческая мастерская</div>
+                            <div class="booking-meta">22 июня 2024, 14:00 • 3 участника</div>
+                        </div>
+                        <div class="booking-actions">
+                            <button class="edit-btn">Изменить</button>
+                            <button class="cancel-btn">Отменить</button>
+                        </div>
+                    </div>
+                    
+                    <div class="booking-item">
+                        <div class="booking-info">
+                            <div class="booking-name">Семейный пикник в парке</div>
+                            <div class="booking-meta">30 июня 2024, 12:00 • 4 участника</div>
+                        </div>
+                        <div class="booking-actions">
+                            <button class="edit-btn">Изменить</button>
+                            <button class="cancel-btn">Отменить</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Подвал сайта -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-about">
+                    <div class="footer-logo">
+                        <img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" alt="Логотип 'Семья — это главное'">
+                        <span class="footer-logo-text">Семья — это главное</span>
+                    </div>
+                    <div class="footer-contact">
+                        Телефон: <a href="tel:+74953242367">+7 (495) 324-23-67</a>
+                    </div>
+                    <div class="footer-contact">
+                        Email: <a href="mailto:info@family-first.ru">info@family-first.ru</a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h3>Навигация</h3>
+                    <ul>
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="schedule.html">Расписание</a></li>
+                        <li><a href="competition.html">Конкурсы</a></li>
+                        <li><a href="account.html">Личный кабинет</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Дополнительно</h3>
+                    <ul>
+                        <li><a href="registration.html">Регистрация</a></li>
+                        <li><a href="404.html">Страница не найдена</a></li>
+                        <li><a href="#">Политика конфиденциальности</a></li>
+                        <li><a href="#">Пользовательское соглашение</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 "Семья — это главное". Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Мобильное меню
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            document.querySelector('nav ul').classList.toggle('show');
+        });
+        
+        // Переключение темы (заглушка)
+        document.querySelector('.theme-toggle').addEventListener('click', function() {
+            window.location.href = 'index-light.html';
+        });
+    </script>
+</body>
+</html>
